@@ -38,6 +38,7 @@ public class SecurityConfigurationAuthorization {
     //    For example, /moderator/aaa/admin, /moderator/bbb/admin, /moderator/ccc/admin, are all accessible by users with the role "ADMIN" (and also "MODERATOR")
     //    but /moderator/aaa/bbb/admin is not accessible by users with the role "ADMIN" (Moderators can)
 
+
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
 
@@ -52,6 +53,8 @@ public class SecurityConfigurationAuthorization {
                     auth.requestMatchers("/helloUser").access(hasScope("USER"));//.hasRole("USER");
                     auth.requestMatchers("/helloAdmin").access(hasScope("ADMIN"));
                     auth.requestMatchers("/helloUserAdmin").access(hasAnyScope("USER", "ADMIN"));
+                    auth.requestMatchers("/moderator/**").hasRole("MODERATOR");
+                    auth.requestMatchers("/moderator/*/admin").hasAnyRole("ADMIN", "MODERATOR");
                     auth.anyRequest().authenticated();
                 })
                 .sessionManagement(s -> s.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
